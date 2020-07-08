@@ -1,0 +1,3 @@
+[submodule "DD.TataBuku.Ledger.API/DD.TataBuku.Shared"]
+	path = DD.TataBuku.Ledger.API/DD.TataBuku.Shared
+	url = git@github.com:floresbandung/Common.Shared.git
