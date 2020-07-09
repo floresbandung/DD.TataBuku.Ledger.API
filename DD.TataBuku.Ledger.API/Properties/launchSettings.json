@@ -18,14 +18,9 @@
     "DD.TataBuku.Ledger.API": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "GL_CONNECTION_STRING": "server=localhost;port=55432;database=glTransaction;user id=postgres;password=getdown"
       }
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
-      "publishAllPorts": true
     }
   }
 }
