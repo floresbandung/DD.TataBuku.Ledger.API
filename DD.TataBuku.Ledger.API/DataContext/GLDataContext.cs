@@ -9,11 +9,6 @@ namespace DD.TataBuku.Ledger.API.DataContext
 {
     public class GLDataContext : DbContext
     {
-        public GLDataContext()
-        {
-
-        }
-
         public GLDataContext(DbContextOptions<GLDataContext> options) : base(options)
         {
 
@@ -23,9 +18,8 @@ namespace DD.TataBuku.Ledger.API.DataContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("GL_CONNECTION_STRING") ?? throw new InvalidOperationException(StaticMessage.INVALID_CONNECTION_STRING));
+                optionsBuilder.UseNpgsql(Startup.ConnectionString);
             }
         }
-
     }
 }

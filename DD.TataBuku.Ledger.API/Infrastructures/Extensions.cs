@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DD.TataBuku.Ledger.API.Context;
 using DD.TataBuku.Ledger.API.DataContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,9 @@ namespace DD.TataBuku.Ledger.API.Infrastructures
             using var context = serviceScope.ServiceProvider.GetService<GLDataContext>();
             if (context.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
                 context.Database.Migrate();
+            
+            serviceScope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+
             return builder;
         }
     }

@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "hangfire",
       "applicationUrl": "https://localhost:63617;http://localhost:63617",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -21,8 +21,7 @@
     "DD.TataBuku.Ledger.API": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "GL_CONNECTION_STRING": "server=localhost;port=55432;database=glTransaction;user id=postgres;password=getdown"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

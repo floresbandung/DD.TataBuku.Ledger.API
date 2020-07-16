@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DD.TataBuku.Ledger.API.Migrations
 {
-    public partial class InitData : Migration
+    public partial class Initialize : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,6 +39,8 @@ namespace DD.TataBuku.Ledger.API.Migrations
                     ModifiedBy = table.Column<string>(maxLength: 24, nullable: true),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     GeneralLedgerId = table.Column<Guid>(nullable: false),
+                    AccountCode = table.Column<string>(maxLength: 24, nullable: false),
+                    AccountName = table.Column<string>(maxLength: 256, nullable: false),
                     Amount = table.Column<decimal>(nullable: false),
                     AccountType = table.Column<string>(nullable: false),
                     CurrencyCode = table.Column<string>(maxLength: 24, nullable: false),

@@ -12,8 +12,8 @@ namespace DD.TataBuku.Ledger.API.Business.Purchase
 {
     public class Handler : IRequestHandler<Request, Response>
     {
-        private readonly AccountingEntities entities;
-        public Handler(AccountingEntities accountingEntities)
+        private readonly ApplicationDbContext entities;
+        public Handler(ApplicationDbContext accountingEntities)
         {
             entities = accountingEntities;
         }

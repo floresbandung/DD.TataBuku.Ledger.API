@@ -7,6 +7,8 @@ using DD.Tata.Buku.Shared.Logs;
 using DD.TataBuku.Ledger.API.DataContext;
 using DD.TataBuku.Ledger.API.Infrastructures;
 using DD.TataBuku.Shared.Fault;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,13 +24,9 @@ namespace DD.TataBuku.Ledger.API
 {
     public class Startup
     {
-        public Startup(IWebHostEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -40,10 +38,28 @@ namespace DD.TataBuku.Ledger.API
             services.AddSingleton<IApiLogger, ApiLogger>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddDbContext<GLDataContext>(op => op.UseNpgsql(Environment.GetEnvironmentVariable("GL_CONNECTION_STRING") ?? throw new InvalidOperationException(StaticMessage.INVALID_CONNECTION_STRING)));
+            services.AddDbContext<GLDataContext>(Context);
+            services.AddHangfire(HangFireConfiguration);
 
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionDecorator<,>));
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationDecorator<,>));
+        }
+
+        private string ConnectionString => Configuration.GetConnectionString("PostgreSQL") ??
+            throw new InvalidOperationException(StaticMessage.INVALID_CONNECTION_STRING);
+
+        private void Context(DbContextOptionsBuilder builder)
+        {
+            builder.UseNpgsql(ConnectionString);
+        }
+
+        private void HangFireConfiguration(IGlobalConfiguration configuration)
+        {
+            configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(ConnectionString);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +76,9 @@ namespace DD.TataBuku.Ledger.API
             {
                 endpoints.MapControllers();
             });
+
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
         }
     }
 }
