@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DD.Tata.Buku.Shared.Infrastructures;
 using DD.Tata.Buku.Shared.Logs;
+using DD.TataBuku.Ledger.API.Context;
 using DD.TataBuku.Ledger.API.DataContext;
 using DD.TataBuku.Ledger.API.Infrastructures;
 using DD.TataBuku.Shared.Fault;
@@ -27,6 +28,8 @@ namespace DD.TataBuku.Ledger.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            ConnectionString = Configuration.GetConnectionString("PostgreSQL") ??
+                throw new InvalidOperationException(StaticMessage.INVALID_CONNECTION_STRING);
         }
 
         public IConfiguration Configuration { get; }
@@ -39,14 +42,14 @@ namespace DD.TataBuku.Ledger.API
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddDbContext<GLDataContext>(Context);
+            services.AddDbContext<ApplicationDbContext>(Context);
             services.AddHangfire(HangFireConfiguration);
 
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionDecorator<,>));
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationDecorator<,>));
         }
 
-        private string ConnectionString => Configuration.GetConnectionString("PostgreSQL") ??
-            throw new InvalidOperationException(StaticMessage.INVALID_CONNECTION_STRING);
+        public static string ConnectionString { get; private set; }
 
         private void Context(DbContextOptionsBuilder builder)
         {
